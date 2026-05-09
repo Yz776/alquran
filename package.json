@@ -1,0 +1,22 @@
+{
+  "name": "alquran",
+  "version": "2.0.0",
+  "description": "Al-Qur'an Digital — semua data dari satu file JSON lokal",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "generate": "node generate-data.js",
+    "dev": "node --watch app.js",
+    "check": "node --check app.js && node --check generate-data.js"
+  },
+  "keywords": [
+    "quran",
+    "alquran"
+  ],
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.1.0",
+    "dotenv": "^16.4.7",
+    "securexpress": "^2.2.7"
+  }
+}
