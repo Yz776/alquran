@@ -1,22 +1,23 @@
 {
   "name": "alquran",
-  "version": "2.0.0",
-  "description": "Al-Qur'an Digital — semua data dari satu file JSON lokal",
-  "main": "app.js",
+  "version": "2.1.0",
+  "description": "Al-Qur'an Digital untuk Cloudflare Pages",
   "scripts": {
+    "build": "node build.js",
     "start": "node app.js",
-    "generate": "node generate-data.js",
-    "dev": "node --watch app.js",
-    "check": "node --check app.js && node --check generate-data.js"
+    "dev": "node app.js",
+    "check": "node --check app.js && node --check build.js"
   },
   "keywords": [
     "quran",
-    "alquran"
+    "alquran",
+    "cloudflare-pages"
   ],
   "license": "ISC",
   "dependencies": {
-    "express": "^5.1.0",
     "dotenv": "^16.4.7",
+    "express": "^5.1.0",
     "securexpress": "^2.2.7"
-  }
+  },
+  "devDependencies": {}
 }
