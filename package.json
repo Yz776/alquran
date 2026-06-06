@@ -1,17 +1,19 @@
 {
   "name": "alquran",
-  "version": "2.1.0",
-  "description": "Al-Qur'an Digital untuk Cloudflare Pages",
+  "version": "2.2.0",
+  "description": "Al-Qur'an Digital untuk Cloudflare Workers",
   "scripts": {
-    "build": "node build.js",
+    "build": "wrangler deploy",
+    "deploy": "wrangler deploy",
+    "versions:upload": "wrangler versions upload",
     "start": "node app.js",
-    "dev": "node app.js",
-    "check": "node --check app.js && node --check build.js"
+    "dev": "wrangler dev",
+    "check": "node --check app.js"
   },
   "keywords": [
     "quran",
     "alquran",
-    "cloudflare-pages"
+    "cloudflare-workers"
   ],
   "license": "ISC",
   "dependencies": {
@@ -19,5 +21,7 @@
     "express": "^5.1.0",
     "securexpress": "^2.2.7"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "wrangler": "^4.98.0"
+  }
 }
