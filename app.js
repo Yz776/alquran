@@ -339,6 +339,116 @@ audio{width:100%;border-radius:10px;outline:none}
   .hero-arab{font-size:42px}
 }
 </style>
+<script>
+(function () {
+  const KEY = "kfai_donasi_v2";
+
+  if (localStorage.getItem(KEY)) return;
+
+  function closePopup() {
+    localStorage.setItem(KEY, "1");
+    document.getElementById("kfai-donasi-popup")?.remove();
+  }
+
+  function createPopup() {
+    const popup = document.createElement("div");
+
+    popup.id = "kfai-donasi-popup";
+
+    popup.style.cssText = `
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,.65);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      z-index:99999999;
+      padding:20px;
+      box-sizing:border-box;
+    `;
+
+    popup.innerHTML = `
+      <div style="
+        position:relative;
+        background:#fff;
+        width:100%;
+        max-width:420px;
+        border-radius:20px;
+        padding:24px;
+        text-align:center;
+        box-shadow:0 20px 60px rgba(0,0,0,.25);
+        font-family:system-ui,sans-serif;
+      ">
+
+        <button id="kfai-close" style="
+          position:absolute;
+          top:10px;
+          right:10px;
+          width:34px;
+          height:34px;
+          border:none;
+          border-radius:50%;
+          background:#f3f4f6;
+          cursor:pointer;
+          font-size:20px;
+          line-height:1;
+        ">
+          ✕
+        </button>
+
+        <img
+          src="https://i.ibb.co/99S0mzBy/qr-ID1026536158821-21-06-26-1782048531-1782048531392.jpg"
+          alt="QRIS"
+          style="
+            width:100%;
+            max-width:260px;
+            border-radius:12px;
+            margin-bottom:15px;
+          "
+        >
+
+        <h2 style="
+          margin:10px 0;
+          color:#111827;
+        ">
+          ❤️ Dukung Server Kami
+        </h2>
+
+        <p style="
+          color:#4b5563;
+          line-height:1.6;
+          margin:0;
+        ">
+          Jika layanan ini bermanfaat, Anda dapat memberikan
+          dukungan seikhlasnya untuk membantu biaya server
+          agar layanan tetap berjalan dan terus berkembang.
+        </p>
+
+        <div style="
+          margin-top:15px;
+          font-size:12px;
+          color:#9ca3af;
+        ">
+          Donasi tidak wajib dan tidak memengaruhi akses layanan.
+        </div>
+
+      </div>
+    `;
+
+    document.body.appendChild(popup);
+
+    document
+      .getElementById("kfai-close")
+      .addEventListener("click", closePopup);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", createPopup);
+  } else {
+    createPopup();
+  }
+})();
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Noto+Naskh+Arabic:wght@400;600;700&family=Noto+Sans+Arabic:wght@400;600;700&family=Scheherazade+New:wght@400;700&display=swap" rel="stylesheet">
