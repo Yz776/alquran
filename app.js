@@ -31,8 +31,8 @@ app.disable('x-powered-by');
 // ─────────────────────────────────────────────
 // KONFIGURASI — sesuaikan URL ini
 // ─────────────────────────────────────────────
-const DATA_SOURCE = process.env.QURAN_DATA_URL || 'https://storage.example.com/quran-data.json';
-// Jika pakai file lokal, ganti dengan: const DATA_SOURCE = './quran-data.json';
+// const DATA_SOURCE = process.env.QURAN_DATA_URL || 'https://storage.example.com/quran-data.json';
+ const DATA_SOURCE = './quran-data.json';
 // ─────────────────────────────────────────────
 
 // ── Body parser (SEBELUM securexpress) ───────
