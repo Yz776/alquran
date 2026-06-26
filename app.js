@@ -319,15 +319,7 @@ audio{width:100%;border-radius:10px;outline:none}
 .btn-next{background:#16a34a;color:#fff}
 .btn-prev{background:#fff;color:#374151;border:1px solid #e5e7eb}
 
-/* ── Donation popup ── */
-#kfai-donasi-popup{position:fixed;inset:0;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;z-index:99999999;padding:20px;box-sizing:border-box}
-#kfai-donasi-popup .popup-inner{position:relative;background:#fff;width:100%;max-width:420px;border-radius:20px;padding:24px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.25);font-family:system-ui,sans-serif}
-#kfai-donasi-popup .popup-close{position:absolute;top:10px;right:10px;width:34px;height:34px;border:none;border-radius:50%;background:#f3f4f6;cursor:pointer;font-size:20px;line-height:1}
-#kfai-donasi-popup .popup-close:hover{background:#e5e7eb}
-#kfai-donasi-popup .popup-qr{width:100%;max-width:260px;border-radius:12px;margin-bottom:15px}
-#kfai-donasi-popup .popup-title{margin:10px 0;color:#111827;font-size:18px}
-#kfai-donasi-popup .popup-desc{color:#4b5563;line-height:1.6;margin:0}
-#kfai-donasi-popup .popup-note{margin-top:15px;font-size:12px;color:#9ca3af}
+/* ── Donation popup (v2) — handled via inline script below ── */
 
 @media(max-width:520px){
   .navbar{padding:12px 16px}
@@ -339,39 +331,168 @@ audio{width:100%;border-radius:10px;outline:none}
 </style>
 `;
 
-// ── Template: Donation popup script (terpisah dari CSS) ──
+// ── Template: Donation popup script (versi baru dengan QRIS toggle) ──
 const DONASI_SCRIPT = `
 <script>
-(function () {
-  var KEY = 'kfai_donasi_v2';
-  if (localStorage.getItem(KEY)) return;
-
-  function closePopup() {
-    localStorage.setItem(KEY, '1');
-    var el = document.getElementById('kfai-donasi-popup');
-    if (el) el.remove();
-  }
-
-  function createPopup() {
-    var popup = document.createElement('div');
-    popup.id = 'kfai-donasi-popup';
-    popup.innerHTML =
-      '<div class="popup-inner">' +
-        '<button class="popup-close" id="kfai-close">&#10005;</button>' +
-        '<img class="popup-qr" src="https://i.ibb.co/99S0mzBy/qr-ID1026536158821-21-06-26-1782048531-1782048531392.jpg" alt="QRIS">' +
-        '<h2 class="popup-title">&#10084;&#65039; Dukung Server Kami</h2>' +
-        '<p class="popup-desc">Jika layanan ini bermanfaat, Anda dapat memberikan dukungan seikhlasnya untuk membantu biaya server agar layanan tetap berjalan dan terus berkembang.</p>' +
-        '<div class="popup-note">Donasi tidak wajib dan tidak memengaruhi akses layanan.</div>' +
-      '</div>';
-    document.body.appendChild(popup);
-    document.getElementById('kfai-close').addEventListener('click', closePopup);
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', createPopup);
-  } else {
-    createPopup();
-  }
+(() => {
+  const STORAGE_KEY = "kfai_donasi_popup_v2";
+  if (localStorage.getItem(STORAGE_KEY)) return;
+  const css = \`
+#kfai-overlay{
+position:fixed;
+inset:0;
+display:flex;
+align-items:center;
+justify-content:center;
+padding:16px;
+background:rgba(0,0,0,.45);
+backdrop-filter:blur(3px);
+z-index:999999999;
+box-sizing:border-box;
+font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+}
+#kfai-popup{
+position:relative;
+width:min(92vw,340px);
+background:#fff;
+border-radius:18px;
+box-shadow:0 15px 40px rgba(0,0,0,.2);
+overflow:hidden;
+animation:kfaiShow .25s ease;
+}
+@media(min-width:768px){
+#kfai-popup{
+width:360px;
+}
+}
+#kfai-content{
+padding:22px;
+text-align:center;
+}
+#kfai-close{
+position:absolute;
+top:10px;
+right:10px;
+width:36px;
+height:36px;
+border:none;
+border-radius:50%;
+background:#f3f4f6;
+color:#555;
+font-size:22px;
+cursor:pointer;
+transition:.2s;
+}
+#kfai-close:hover{
+background:#e5e7eb;
+}
+#kfai-heart{
+font-size:34px;
+margin-bottom:10px;
+}
+#kfai-title{
+font-size:21px;
+font-weight:700;
+color:#111827;
+margin-bottom:10px;
+}
+#kfai-text{
+font-size:14px;
+line-height:1.6;
+color:#4b5563;
+margin-bottom:20px;
+}
+#kfai-btn{
+display:inline-block;
+padding:11px 20px;
+border-radius:999px;
+background:#2563eb;
+color:#fff;
+font-size:14px;
+font-weight:600;
+cursor:pointer;
+border:none;
+transition:.2s;
+}
+#kfai-btn:hover{
+background:#1d4ed8;
+}
+#kfai-note{
+margin-top:15px;
+font-size:12px;
+color:#9ca3af;
+}
+#kfai-qr{
+display:none;
+}
+#kfai-qr img{
+width:min(70vw,220px);
+max-width:100%;
+border-radius:12px;
+display:block;
+margin:auto;
+margin-bottom:15px;
+}
+@keyframes kfaiShow{
+from{
+opacity:0;
+transform:translateY(10px) scale(.96);
+}
+to{
+opacity:1;
+transform:none;
+}
+}
+\`;
+  const style = document.createElement("style");
+  style.innerHTML = css;
+  document.head.appendChild(style);
+  const overlay = document.createElement("div");
+  overlay.id = "kfai-overlay";
+  overlay.innerHTML = \`
+<div id="kfai-popup">
+<button id="kfai-close">✕</button>
+<div id="kfai-content">
+<div id="kfai-home">
+<div id="kfai-heart">❤️</div>
+<div id="kfai-title">
+Dukung Server Kami
+</div>
+<div id="kfai-text">
+Layanan ini dapat digunakan secara gratis.
+Jika Anda merasa terbantu, Anda dapat memberikan
+dukungan seikhlasnya agar server tetap berjalan
+dan terus berkembang.
+</div>
+<button id="kfai-btn">
+Lihat QRIS
+</button>
+<div id="kfai-note">
+Donasi tidak wajib ❤️
+</div>
+</div>
+<div id="kfai-qr">
+<img src="https://i.ibb.co/99S0mzBy/qr-ID1026536158821-21-06-26-1782048531-1782048531392.jpg">
+<div id="kfai-title">
+Scan QRIS
+</div>
+<div id="kfai-text">
+Terima kasih atas dukungan Anda.
+Semoga segala urusan dimudahkan dan rezekinya dilancarkan.
+</div>
+</div>
+</div>
+</div>
+\`;
+  document.body.appendChild(overlay);
+  document.getElementById("kfai-btn").onclick = () => {
+    document.getElementById("kfai-home").style.display = "none";
+    document.getElementById("kfai-qr").style.display = "block";
+  };
+  document.getElementById("kfai-close").onclick = () => {
+    localStorage.setItem(STORAGE_KEY,"1");
+    overlay.remove();
+  };
 })();
 </script>
 `;
